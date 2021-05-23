@@ -19,7 +19,8 @@ const onNextPage = () => {
  */
 const getTwitterData = (nextPage=false) => {
     const query=document.getElementById('user-search-input').value;
-    if(!query) return;
+    if(!query) return; //when there are no searches, do nothing
+        //users can use special characters without breaking it:
     const encodedQuery=encodeURIComponent(query);
     let fullUrl = `${URL}?q=${encodedQuery}&count=11`;
     if(nextPage && nextPageUrl){
@@ -28,7 +29,7 @@ const getTwitterData = (nextPage=false) => {
     fetch(fullUrl).then((response)=>{
         return response.json();
     }).then((data)=>{
-        buildTweets(data.statuses);
+        buildTweets(data.statuses, nextPage);
         saveNextPage(data.search_metadata);
         nextPageButtonVisibility(data.search_metadata);
    });
@@ -107,6 +108,7 @@ const buildTweets = (tweets, nextPage) => {
             </div>
             `
     })
+    //if it's there is next page, then append
     if(nextPage){
         document.querySelector('.tweets-list').insertAdjacentHTML('beforeend', twitterContent);
     } else {
